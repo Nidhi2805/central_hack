@@ -1,6 +1,7 @@
 "use client"
 import { useState } from "react";
 import Navbar from "../components/navbar";
+import Image from "next/image";
 
 const Detection = () => {
   const [selected, setSelected] = useState("text");
@@ -27,18 +28,17 @@ const Detection = () => {
           </button>
         ))}
       </div>
-      <div className="mt-8 w-[500px]">
-        {selected === "text" && (
+      <div className="mt-8 w-[500px] h-32 flex items-center justify-center bg-black border border-gray-600 rounded p-3 text-white text-lg text-center cursor-pointer">
+        {selected === "text" ? (
           <textarea
-            className="w-full h-32 bg-black border border-gray-600 rounded-sm p-3 text-white text-lg"
+            className="w-full h-full bg-transparent text-white text-lg resize-none outline-none"
             placeholder="Enter text here"
           />
-        )}
-        {selected === "text" && (
-          <textarea
-            className="w-full h-32 bg-black border border-gray-600 rounded-sm p-3 text-white text-lg"
-            placeholder="Enter text here"
-          />
+        ) : (
+          <div className="flex flex-col items-center">
+            <Image src="/upload.svg" alt="Upload" width={50} height={50} />
+            <p className="mt-2 text-white">Click here to upload</p>
+          </div>
         )}
       </div>
       <button className="mt-8 bg-[#0600C2] text-white px-8 py-3 rounded text-xl hover:opacity-80">
