@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react";
-import Navbar from "../components/navbar";
+import Navbar from "../../components/navbar";
 import Image from "next/image";
 
 const Detection = () => {
