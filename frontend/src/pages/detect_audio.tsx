@@ -17,4 +17,6 @@ const DetectionResult = () => {
       </button>
     </div>
   );
-}
+};
+
+export default DetectionResult;
