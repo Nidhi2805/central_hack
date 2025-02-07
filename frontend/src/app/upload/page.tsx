@@ -7,6 +7,13 @@ const Detection = () => {
   const [selected, setSelected] = useState("text");
   const options = ["text", "image", "video", "audio"];
 
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      console.log("Uploaded file:", file.name);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center">
       <Navbar />
@@ -28,7 +35,7 @@ const Detection = () => {
           </button>
         ))}
       </div>
-      <div className="mt-8 w-[500px] h-32 flex items-center justify-center bg-black border border-gray-600 rounded p-3 text-white text-lg text-center cursor-pointer">
+      <label className="mt-8 w-[500px] h-32 flex items-center justify-center bg-black border border-gray-600 rounded p-3 text-white text-lg text-center cursor-pointer">
         {selected === "text" ? (
           <textarea
             className="w-full h-full bg-transparent text-white text-lg resize-none outline-none"
@@ -40,7 +47,8 @@ const Detection = () => {
             <p className="mt-2 text-white">Click here to upload</p>
           </div>
         )}
-      </div>
+        <input type="file" className="hidden" onChange={handleFileUpload} />
+      </label>
       <button className="mt-8 bg-[#0600C2] text-white px-8 py-3 rounded text-xl hover:opacity-80">
         Detect
       </button>
