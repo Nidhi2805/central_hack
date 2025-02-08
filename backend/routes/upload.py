@@ -2,10 +2,15 @@ from fastapi import APIRouter, Request, File, UploadFile, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from pathlib import Path
-from .detect import detect_percentage
+from detectors.detector import DeepfakeTextDetector
+from dotenv import load_dotenv
+from os import getenv
+
+load_dotenv()
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
+text_detector = DeepfakeTextDetector(api_key=getenv("OPENAI_API_KEY"))
 
 UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
@@ -24,7 +29,7 @@ async def upload_file(request: Request, file: UploadFile = File(...)):
         file_content = await file.read()
         text_data = file_content.decode("utf-8")
 
-        ai_percentage = detect_percentage(text_data)
+        ai_percentage = text_detector.analyze_text(text_data)
 
         return templates.TemplateResponse(
             "show_text.html",
