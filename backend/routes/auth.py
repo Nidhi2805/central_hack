@@ -3,6 +3,7 @@ import secrets
 from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import RedirectResponse, HTMLResponse
 from authlib.integrations.starlette_client import OAuth
+from services.db import users
 
 router = APIRouter()
 
@@ -13,8 +14,9 @@ oauth.register(
     client_id=os.getenv("GOOGLE_CLIENT_ID"),
     client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
     server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
-    client_kwargs={"scope": "openid email profile"}
+    client_kwargs={"scope": "openid email profile"},
 )
+
 
 @router.get("/login")
 async def login(request: Request):
@@ -22,6 +24,7 @@ async def login(request: Request):
     request.session["nonce"] = nonce
     redirect_uri = request.url_for("auth")
     return await oauth.google.authorize_redirect(request, redirect_uri, nonce=nonce)
+
 
 @router.get("/auth")
 async def auth(request: Request):
@@ -34,8 +37,21 @@ async def auth(request: Request):
         user = await oauth.google.parse_id_token(token, nonce=nonce)
     else:
         user = await oauth.google.userinfo(token)
-    request.session["user"] = dict(user)
+    user_ = dict(user)
+    request.session["user"] = user_
+    response = await users.find_one({"email":user_['email']})
+    if not response:
+        await users.insert_one(
+            {
+                "email":user_['email'], 
+                "username":user_['given_name'], 
+                "history":{
+                    "type":[], "data":[], "deepfaked":[], "additional_info": []
+                    }
+                }
+            )
     return RedirectResponse(url="http://localhost:3000/upload")
+
 
 @router.get("/session", response_class=HTMLResponse)
 async def session_page(request: Request):
@@ -43,6 +59,7 @@ async def session_page(request: Request):
     if user:
         return f"<h1>Logged In</h1><pre>{user}</pre>"
     return "<h1>Not logged in</h1>"
+
 
 @router.get("/logout")
 async def logout(request: Request):

@@ -5,6 +5,7 @@ from fastapi.templating import Jinja2Templates
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
+
 def detect_percentage(text: str) -> float:
     return 10
 
@@ -19,8 +20,13 @@ async def detect_text(request: Request, text: str = Form(...)):
 
 
 @router.get("/show-text/", response_class=HTMLResponse)
-async def show_text(request: Request, text: str = "No text provided", ai_percentage: float = 0.0):
+async def show_text(
+    request: Request, text: str = "No text provided", ai_percentage: float = 0.0
+):
     user = request.session.get("user")
     if user:
-        return templates.TemplateResponse("show_text.html", {"request": request, "text": text, "ai_percentage": ai_percentage})
+        return templates.TemplateResponse(
+            "show_text.html",
+            {"request": request, "text": text, "ai_percentage": ai_percentage},
+        )
     return RedirectResponse(url="/login")
