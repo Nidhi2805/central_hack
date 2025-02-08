@@ -18,7 +18,7 @@ export default function History() {
           >
             {/* Text */}
             <p className="text-2xl font-bold">
-              Lorem ipsum something something, I'm detecting....
+              Lorem ipsum something something, Im detecting....
             </p>
             
             {/* Image beside the text */}
