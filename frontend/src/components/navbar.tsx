@@ -1,4 +1,6 @@
 import Image from "next/image";
+import Link from "next/link";
+
 export default function Navbar() {
   return (
     <nav className="w-full bg-background-secondary text-white py-4 px-6 flex justify-between items-center sticky top-0 left-0 z-50">
@@ -9,9 +11,9 @@ export default function Navbar() {
           SudoShield
         </h1>
       </div>
-      <div>
+      <Link href={"/history"}>
         <Image src="/clock.svg" alt="Clock" width={50} height={50} />
-      </div>
+      </Link>
     </nav>
   );
 }

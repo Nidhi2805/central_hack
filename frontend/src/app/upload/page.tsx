@@ -35,7 +35,7 @@ const DetectionPage = () => {
         ))}
       </div>
       <div>
-        <label className="mt-8 w-[500px] h-32 flex items-center justify-center bg-black border border-gray-600 rounded p-3 text-text text-lg text-center cursor-pointer">
+        {/* <label className="mt-8 w-[500px] h-32 flex items-center justify-center bg-black border border-gray-600 rounded p-3 text-text text-lg text-center cursor-pointer">
           {selected === "text" ? (
             <textarea
               className="w-full h-full bg-transparent text-text text-lg resize-none outline-none"
@@ -47,12 +47,16 @@ const DetectionPage = () => {
               <p className="mt-2 text-text">Click here to upload</p>
             </div>
           )}
+        </label> */}
+        <label className="mt-8 w-[500px] h-32 flex items-center justify-center bg-black border border-gray-600 rounded p-3 text-text text-lg text-center cursor-pointer">
+          <div className="flex flex-col items-center">
+            <Image src="/upload.svg" alt="Upload" width={50} height={50} />
+            <p className="mt-2 text-text">Click here to upload</p>
+          </div>
         </label>
       </div>
       <input type="file" className="hidden" onChange={handleFileUpload} />
-      <AccentButton className="mt-8">
-        Detect
-      </AccentButton>
+      <AccentButton className="mt-8">Detect</AccentButton>
     </div>
   );
 };
