@@ -20,10 +20,12 @@ oauth.register(
 
 @router.get("/login")
 async def login(request: Request):
-    nonce = secrets.token_urlsafe(16)
-    request.session["nonce"] = nonce
-    redirect_uri = request.url_for("auth")
-    return await oauth.google.authorize_redirect(request, redirect_uri, nonce=nonce)
+    user = request.session.get("user")
+    if not user:
+        nonce = secrets.token_urlsafe(16)
+        request.session["nonce"] = nonce
+        redirect_uri = request.url_for("auth")
+        return await oauth.google.authorize_redirect(request, redirect_uri, nonce=nonce)
 
 
 @router.get("/auth")

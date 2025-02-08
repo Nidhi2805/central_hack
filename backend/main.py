@@ -10,11 +10,15 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Allow requests from Next.js frontend
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:8000",
+    ],
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
-    allow_headers=["*"],  # Allow all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
 
 app.add_middleware(SessionMiddleware, secret_key=getenv("SECRET_KEY"))
 app.include_router(upload.router)

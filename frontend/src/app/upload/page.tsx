@@ -8,6 +8,7 @@ const DetectionPage = () => {
   const [uploadStatus, setUploadStatus] = useState<string | null>(null);
   const [fileUploaded, setFileUploaded] = useState(false);
   const inputFileRef = useRef<HTMLInputElement | null>(null);
+  const [responseData, setResponseData] = useState<any | null>(null);
 
   const options = ["text", "image", "video", "audio"];
 
@@ -15,7 +16,6 @@ const DetectionPage = () => {
     e.preventDefault();
 
     const file = inputFileRef.current?.files?.[0];
-
     if (!file) {
       setUploadStatus("Please select a file first.");
       return;
@@ -25,19 +25,24 @@ const DetectionPage = () => {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/upload", {
+      const response = await fetch("http://127.0.0.1:8000/upload/", {
         method: "POST",
         body: formData,
+        credentials: "include",
+        mode:'no-cors'
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        setUploadStatus(`File "${data.filename}" uploaded successfully.`);
-        setFileUploaded(true); // Mark as uploaded
-      } else {
+      if (!response.ok) {
         setUploadStatus(`Upload failed: ${response.statusText}`);
         setFileUploaded(false);
+        return;
       }
+
+      const data = await response.text(); // Get raw HTML response
+      setResponseData(data);
+      setUploadStatus("File analyzed successfully.");
+      setFileUploaded(true);
+      console.log("less go")
     } catch (error) {
       console.error("Error uploading file:", error);
       setUploadStatus("An error occurred during file upload.");
@@ -56,9 +61,7 @@ const DetectionPage = () => {
           <button
             key={option}
             className={`px-6 py-3 rounded-full text-text text-lg transition-colors duration-200 ${
-              selected === option
-                ? "bg-buttons-primary"
-                : "hover:bg-buttons-secondary"
+              selected === option ? "bg-buttons-primary" : "hover:bg-buttons-secondary"
             }`}
             onClick={() => setSelected(option)}
           >
@@ -87,7 +90,7 @@ const DetectionPage = () => {
           className="hidden"
           id="file-upload"
           ref={inputFileRef}
-          onChange={() => setFileUploaded(false)} // Reset upload status when a new file is selected
+          onChange={() => setFileUploaded(false)}
         />
 
         <AccentButton className="mt-8" type="submit">
@@ -96,13 +99,16 @@ const DetectionPage = () => {
       </form>
 
       {uploadStatus && (
-        <p
-          className={`mt-4 text-lg ${
-            uploadStatus.startsWith("File") ? "text-green-500" : "text-red-500"
-          }`}
-        >
+        <p className={`mt-4 text-lg ${uploadStatus.includes("successfully") ? "text-green-500" : "text-red-500"}`}>
           {uploadStatus}
         </p>
+      )}
+
+      {responseData && (
+        <div className="mt-6 bg-gray-800 p-4 rounded-lg text-white max-w-xl overflow-auto">
+          <h3 className="text-lg font-semibold">Analysis Result:</h3>
+          <div dangerouslySetInnerHTML={{ __html: responseData }} />
+        </div>
       )}
     </div>
   );
