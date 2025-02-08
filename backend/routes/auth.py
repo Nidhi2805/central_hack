@@ -35,8 +35,7 @@ async def auth(request: Request):
     else:
         user = await oauth.google.userinfo(token)
     request.session["user"] = dict(user)
-    return RedirectResponse(url="/upload")
-
+    return RedirectResponse(url="http://localhost:3000/upload")
 
 @router.get("/session", response_class=HTMLResponse)
 async def session_page(request: Request):
