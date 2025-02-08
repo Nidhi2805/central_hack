@@ -1,5 +1,4 @@
 import AccentButton from "@/components/accent-button";
-import Navbar from "../components/navbar";
 import Image from "next/image";
 
 const LandingPage = () => {
